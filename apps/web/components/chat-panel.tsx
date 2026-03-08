@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,7 +27,7 @@ export function ChatPanel() {
   ]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const [wsStatus, setWsStatus] = useState("disconnected");
+  const [, setWsStatus] = useState("disconnected");
   const [wsEvents, setWsEvents] = useState<WsEvent[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -62,8 +61,6 @@ export function ChatPanel() {
       ws.close();
     };
   }, []);
-
-  const wsBadgeVariant = useMemo(() => (wsStatus === "connected" ? "default" : "outline"), [wsStatus]);
 
   const sendMessage = () => {
     const trimmed = input.trim();
@@ -121,18 +118,17 @@ export function ChatPanel() {
   };
 
   return (
-    <Card className="h-full">
+    <Card className="flex h-full min-h-0 flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div>
+          <div className="space-y-1.5">
             <CardTitle>Assistant</CardTitle>
-            <CardDescription>SSE token stream + websocket presence</CardDescription>
+            <CardDescription>Ask questions about the dataset.</CardDescription>
           </div>
-          <Badge variant={wsBadgeVariant}>WS {wsStatus}</Badge>
         </div>
       </CardHeader>
-      <CardContent className="flex h-[560px] flex-col gap-4">
-        <div className="flex-1 space-y-3 overflow-y-auto rounded-md border bg-muted/20 p-3">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto rounded-md border bg-muted/20 p-3">
           {messages.map((message) => (
             <div
               key={message.id}

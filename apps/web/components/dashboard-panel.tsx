@@ -22,7 +22,7 @@ export function DashboardPanel() {
         setIsLoading(true);
         const [summaryResponse, carsResponse] = await Promise.all([
           fetch("/api/dashboard/summary", { cache: "no-store" }),
-          fetch("/api/dashboard/cars?limit=8", { cache: "no-store" }),
+          fetch("/api/dashboard/cars?limit=16", { cache: "no-store" }),
         ]);
 
         if (!summaryResponse.ok || !carsResponse.ok) {
@@ -90,7 +90,7 @@ export function DashboardPanel() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-2">
-            <div>
+            <div className="space-y-1.5">
               <CardTitle>Fuel efficiency snapshot</CardTitle>
               <CardDescription>Sample data grouped by make</CardDescription>
             </div>
@@ -102,8 +102,10 @@ export function DashboardPanel() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Cars dataset</CardTitle>
-          <CardDescription>Data from /api/dashboard/cars</CardDescription>
+          <div className="space-y-1.5">
+            <CardTitle>Cars dataset</CardTitle>
+            <CardDescription>Data from /api/dashboard/cars</CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           {error ? (
