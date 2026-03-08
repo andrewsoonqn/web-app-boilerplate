@@ -1,108 +1,103 @@
 # Boilerplate Monorepo
 
-Full-stack boilerplate for quickly spinning up web apps with a Next.js frontend and Supabase-powered backend services.
+Full-stack starter for shipping new ideas quickly with a polished frontend and backend endpoints wired to Supabase.
 
-## Tech Stack
+## What is included
 
-- Next.js (App Router) for the main web app
-- React + TypeScript across apps and shared packages
-- Supabase for Postgres, auth, and storage
-- Tailwind CSS for styling
-- ShadCN UI components
+- Next.js App Router app at `apps/web`
+- Landing page with CTA `Get Started`
+- Workspace page with:
+  - Minimal dashboard on the left (sample cars dataset)
+  - Compact chat UI on the right
+- Backend route handlers for dashboard data
+- SSE streaming chat endpoint
+- WebSocket demo server for realtime presence/events
+- Supabase SQL schema and seed scripts in `db/`
 
-## Prerequisites
+## Tech stack
 
-- Node.js 20+ (LTS recommended)
-- pnpm (preferred) or npm
-- A Supabase project (free tier is fine)
+- Next.js 15 + React 19 + TypeScript
+- Tailwind CSS
+- shadcn-style UI components
+- Supabase (`@supabase/supabase-js`)
+- pnpm workspaces
 
-## Quickstart (Local Development)
+## Quickstart
 
-1. Clone the repo
-
-   ```bash
-   git clone <your-repo-url> my-app
-   cd my-app
-   ```
-
-2. Install dependencies
-
-   Using pnpm (recommended):
+1. Install dependencies
 
    ```bash
    pnpm install
    ```
 
-   Or with npm:
+2. Set environment variables
 
    ```bash
-   npm install
+   cp .env.example .env.local
    ```
 
-3. Set up environment variables
+   Then fill in:
 
-   - Create `.env.local` in the project root (or copy from an example file when available):
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   SUPABASE_SERVICE_ROLE_KEY=...
+   ```
 
-     ```bash
-     cp .env.example .env.local  # if .env.example exists
-     ```
+3. Apply SQL in Supabase SQL editor
 
-   - Add your Supabase credentials (from the Supabase dashboard):
+   - Run `db/schema.sql`
+   - Run `db/seed.sql`
 
-     ```bash
-     NEXT_PUBLIC_SUPABASE_URL=...
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-     SUPABASE_SERVICE_ROLE_KEY=...
-     ```
-
-4. Start the dev server
-
-   If you are using a single Next.js app at the root:
+4. Start development
 
    ```bash
    pnpm dev
    ```
 
-   Or with npm:
+   This runs:
+   - Next app on `http://localhost:3000`
+   - WebSocket demo server on `ws://localhost:3001`
 
-   ```bash
-   npm run dev
-   ```
+## Pages
 
-   If you use a monorepo layout (for example, an app in `apps/web`), change into that directory first:
+- `http://localhost:3000/` - landing page
+- `http://localhost:3000/workspace` - dashboard + chat demo
 
-   ```bash
-   cd apps/web
-   pnpm dev
-   ```
+## Backend endpoints
 
-5. Open your browser
+- `GET /api/dashboard/summary` - dataset summary stats
+- `GET /api/dashboard/cars?limit=8` - cars rows
+- `GET /api/chat/stream?message=...` - SSE token streaming response
 
-   Visit `http://localhost:3000` to see the app running.
+## Notes on data flow
 
-## Common Scripts
+- Dashboard UI calls Next route handlers (not Supabase directly).
+- Route handlers query Supabase when env vars are configured.
+- If Supabase is not configured yet, endpoints return embedded sample data so the UI still works locally.
+- Chat response text streams through SSE, while a separate WebSocket connection demonstrates realtime event updates.
 
-These are typical scripts you may have in `package.json` (adjust to match your setup). Replace `pnpm` with `npm run` if you prefer npm:
+## Scripts
 
-- `pnpm dev` – Start the local development server
-- `pnpm build` – Create a production build
-- `pnpm start` – Start the production server from the build output
-- `pnpm test` – Run tests (if configured)
+- `pnpm dev` - run web app (Next + websocket server)
+- `pnpm build` - production build
+- `pnpm start` - start production server
+- `pnpm typecheck` - TypeScript check
 
-## Project Layout (Suggested)
-
-This repository is intended to support a monorepo structure. A common layout looks like:
+## Project layout
 
 ```text
 .
 ├── apps/
-│   └── web/           # Next.js app (primary frontend + API routes)
-├── services/          # Optional microservices
-├── packages/          # Shared UI, utils, config
-├── db/                # Postgres .sql files (schema, reset, seed)
-├── .env.example       # Example env file (structure only)
-├── .env.local         # Local environment variables (gitignored)
+│   └── web/
+│       ├── app/
+│       ├── components/
+│       ├── lib/
+│       └── ws-server.mjs
+├── db/
+│   ├── schema.sql
+│   └── seed.sql
+├── .env.example
+├── pnpm-workspace.yaml
 └── README.md
 ```
-
-Adjust these paths, commands, and env vars to match your actual project. This README is an example starting point for developers new to the repo.
