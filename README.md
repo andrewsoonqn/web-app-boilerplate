@@ -33,7 +33,7 @@ Full-stack starter for shipping new ideas quickly with a polished frontend and b
 2. Set environment variables
 
    ```bash
-   cp .env.example .env.local
+   cp .env.example .env
    ```
 
    Then fill in:
